@@ -1,0 +1,439 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		
+		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		
+		<title>RCC CRATEmaker</title>
+	
+	</head>
+	
+	<style type="text/css">
+		#container {
+			padding: 0.3em 2em 0.5em 2em;
+			margin-left: auto;
+			margin-right: auto;
+			max-width: 500px;
+			min-width: 250px;
+		}
+		#reset-control {
+			margin-top: 0.8em;
+		}
+		#btn-refresh {
+			padding: 5px;
+			font-size: 12px;
+			margin-left: 1em;
+		}
+		
+		#title {
+			text-align: center;
+			margin-top: 0.3em;
+		}
+
+		#customer-group input {
+			margin-bottom: 0.5em;
+		}
+		
+		#form-wrapper {
+			padding:0.5em 1.2em 0 1.2em;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #f2f2f2;
+			border-radius: 10px;
+			margin-top: 0.6em;
+			
+		}
+		
+		#form-submit {
+			margin-top: 0px;
+		}
+		
+		#form-verification {
+			padding-bottom: 10px;
+		}
+
+		.div-header, .center-text{
+			justify-content: center;
+			text-align: center;
+		}
+		
+		.form-group label {
+			font-weight: bold;
+			color: #666;
+		}
+		
+		#close-wrapper {
+			border-style: solid;
+			border-width: 1px;
+			border-color: #f2f2f2;
+			border-radius: 10px;
+			margin-bottom: 1em;
+			padding: 20px;
+			margin-top: 1em;
+		}
+		
+		#close-wrapper h3 {
+			text-align: center;
+		}
+		
+		#close-title {
+			padding-bottom: 12px;
+
+		}
+		#driver-label {
+			padding: 0px;
+			text-align: left !important;
+			margin-bottom: 0px;
+			padding-bottom: 0px;
+			font-size: 10px;
+			color: rgb(70, 70, 70);
+			padding-left: 10px;
+			padding-bottom: 4px;
+		}
+		#reason-label-container{
+			padding: 5px;
+			background-color: rgb(233, 233, 233);
+			border-radius: 5px;
+			margin-top: 0px !important;
+		}
+
+		.no-check{
+			list-style: none;
+			margin-left: -1em;
+			line-height: 1.7em;
+		}
+
+		.verification{
+			padding: 1em 1em 0.5em 1em;
+		}
+
+		.label-title{
+			font-size: 16px;
+			font-weight: 700;
+			line-height: 24px;
+			margin-bottom: 8px;
+			color: rgb(102, 102, 102);
+		}
+
+		#note-display{
+			white-space: pre-line;
+		}
+	</style>
+	
+	<body>
+	
+	<div id="note-modal" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Copy this note to Toolbox:</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="copy-success" class="alert alert-success clipboard-alert">
+						Copied note to clipboard!
+				</div>
+				<div id="copy-fail" class="alert alert-warning clipboard-alert">
+						Could't copy note, please copy manually.
+				</div>
+				<div id="note-display"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="btnCopy" class="btn btn-primary">Copy (Please click inside popup first!)</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="container">
+		<h1 id="title" class="display-5">RCC CRATEmaker</h1>
+		<div id="reset-control">
+			<p class="center-text text-secondary">Create new note without saving:</span><button id="btn-refresh" class="btn btn-outline-secondary"> New / Reset</button></p>
+		</div>
+		<div id="form-wrapper">
+			<form id="note_form">
+				
+				<div class="form-group" id="customer-group">
+					<label for="cusotmer_name">Customer info:</label>
+					<input class="form-control" type="text" id="customer_name" name="customer_name" placeholder="Name" />
+					<input class="form-control form-control-sm" type="text" name="customer_po" placeholder="CallerID Number" />
+					<input class="form-control form-control-sm" type="text" name="won" placeholder="WON" />
+				</div>
+
+				<div class="form-group" >
+						<label for="issue_select">Call Driver Type:</label>
+						<select class="custom-select" id="issue_select" required>
+								<option value=""> ---- Select a call driver ----</option>
+								<option value="0">OTHER (note needed)</option>
+								<optgroup label="General Issues">									
+									<option value="01">Issue - Giveback credit issues</option>
+									<option value="02">Issue - Split charges / confusing billing</option>
+									<option value="03">Issue - Unauthorized charges</option>
+									<option value="04">Issue - Order Cancellation</option>
+									<option value="05">Issue - Payment Decline</option>
+									<option value="06">Delivery Issue - Cannot Receive on Delivery Date</option>
+									<option value="07">Delivery Issue - Late Delivery</option>
+									<option value="08">Delivery Issue - Delivery dispute (item didn't arrive)</option>
+								</optgroup>
+								<optgroup label="Change requests">
+									<option value="09">Modify - Update Payment Information</option>
+									<option value="10">Modify - Change Address</option>
+									<option value="11">Modify - Change email address</option>
+									<option value="12">Modify - Edit Pickup Contact</option>
+									<option value="13">Modify - Add/Change/Cancel Item or Order</option>
+									<option value="14">Modify - Change delivery date</option>
+									<option value="15">Modify - Return Item</option>
+								</optgroup>
+								<optgroup label="Order info requests">
+									<option value="16">Info - Delivery Date</option>
+									<option value="17">Info - Return policies/timelines</option>
+									<option value="18">Info - Refund status</option>
+									<option value="19">Info - Trade-in Status</option>
+									<option value="20">Info - Send Notifications</option>
+									<option value="21">Info - Request Invoice</option>
+									<option value="22">Info - Retail Questions</option>
+								</optgroup>
+						</select>
+					</div>
+
+				<div class="form-group">
+					<label for="call_reason">Reason for Call:</label>
+					<div id="reason-label-container">
+						<p id="driver-label">---- Select a call driver ----</p>
+						<textarea class="form-control" id="call_reason" name="call_reason" form="note_form" placeholder="R:"></textarea>
+					</div>
+				</div>
+				
+				<div class="verification">
+					<p class="label-title">Did you verify the customer according to one of the following criteria?</p>
+					<ul class="no-check">
+						<li><a href="hello://reference/PR4242">PR4242: Customer Engagement Model</a></li>
+						<li><a href="hello://reference/PR5248">PR5248: Protect Customer Privacy</a></li>
+						<li><a href="hello://reference/PR4058">PR4058: (Pickup Contact Verification)</a></li>
+					</ul>
+					<div id="form-verification" class="form-check">
+						<input class="form-check-input" id="check_verification" type="checkbox" name="verification">
+						<label class="form-check-label label-title" for="check_verification">I verified the customer.</label>
+					</div>
+				</div>
+
+				
+				<div class="form-group">
+					<label for="call_actions">Actions Taken:</label>
+					<textarea class="form-control" id="call_actions" name="call_actions" form="note_form" placeholder="A:"></textarea>
+				</div>
+				
+				<div class="form-group">
+					<label for="call_timelines">Timelines/Expectations:</label>
+					<textarea class="form-control" id="call_timelines" name="call_timelines" form="note_form" placeholder="T/E:"></textarea>
+				</div>
+				
+				<div id="close-wrapper">
+					<h3 id="close-title">Call Close Checklist</h3>					
+					<form id="close_checklist">
+						<div class="form-check">
+							<input data-close="SEMS" class="form-check-input close-checklist-item" type="checkbox" value="" id="defaultCheck1">
+							<label class="form-check-label" for="defaultCheck1">
+							Shipping Investigation Timelines
+							</label>
+						</div>
+						<div class="form-check">
+							<input data-close="PaymentStatus" class="form-check-input close-checklist-item" type="checkbox" value="" id="defaultCheck2">
+							<label class="form-check-label" for="defaultCheck2">
+							Payment Status Expectations
+							</label>
+						</div>
+						<!-- <div class="form-check">
+							<input data-close="OLSSPaymentOptions" class="form-check-input close-checklist-item" type="checkbox" value="" id="defaultCheck3">
+							<label class="form-check-label" for="defaultCheck3">
+							OLSS (Payment)
+							</label>
+						</div> -->
+						<div class="form-check">
+							<input data-close="Notifications" class="form-check-input close-checklist-item" type="checkbox" value="" id="defaultCheck4">
+							<label class="form-check-label" for="defaultCheck4">
+							Email/SMS Delivery Updates
+							</label>
+						</div>
+						<div class="form-check">
+							<input data-close="OLSSOverview"class="form-check-input close-checklist-item" type="checkbox" value="" id="defaultCheck5">
+							<label class="form-check-label" for="defaultCheck5">
+							OLSS (Payment, Tracking, 14-Day Returns, Invoices)
+							</label>
+						</div>
+						<div class="form-check">
+							<input data-close="PersonalSetup" class="form-check-input close-checklist-item" type="checkbox" value="" id="defaultCheck6">
+							<label class="form-check-label" for="defaultCheck6">
+							Online Personal Setup Session
+							</label>
+						</div>
+						<div class="form-check">
+							<input data-close="RecapResolution" class="form-check-input close-checklist-item" type="checkbox" value="" id="defaultCheck7">
+							<label class="form-check-label" for="defaultCheck7">
+							Recap Resolution
+							</label>
+						</div>
+				</div>
+				
+				<button class="btn btn-primary form-control" id="form-submit" type="submit">Create Note</button>
+			
+			</form>
+		</div>
+
+		
+	</div>
+		
+	<!-- Scripts go here -->
+	<script type="text/javascript">
+		
+		function getNoteArray(){
+			const close_checklist = Array.from(document.querySelectorAll('.close-checklist-item'))
+				.filter(i => i.checked)
+				.map(i => `✔️ ${i.getAttribute("data-close")}`)
+				.join('\n');
+			
+			const form_data = {
+				timestamp: $('span#timestamp').text(),
+				won: $('input[name=won]').val(),
+				name: $('input[name=customer_name]').val(),
+				po: $('input[name=customer_po]').val(),
+				verified: $('input[name=verification]').is(':checked'),
+				reason: $('textarea[name=call_reason]').val(),
+				actions: $('textarea[name=call_actions]').val(),
+				timelines: $('textarea[name=call_timelines]').val(),
+				close_checklist: close_checklist
+			}
+
+			const displayArr = [`Customer: ${form_data.name}${form_data.po ? `, ${form_data.po}`: ''}`,
+								`Verified: ${form_data.verified ? 'Yes' : 'No'}`,
+								'',
+								`—— Reason for Call ——`,
+								'',
+								`> ${$("#driver-label").text()}`,
+								`${form_data.reason}`,
+								'',
+								`—— Actions Taken ——`,
+								'',
+								`${form_data.actions}`,
+								'',
+								`—— Timelines / Expectations ——`,
+								'',
+								`${form_data.timelines}`,
+								'',
+								`—— Close Checklist ——`,
+								'',
+								`${form_data.close_checklist}`]
+
+			return displayArr;
+		}
+
+		function getFormattedNote(){
+
+			 const paragraphs = getNoteArray().map(item => {
+				return `<p>${item}</p>`
+			});
+			
+			return paragraphs.join('');
+		}
+
+		let click_inside = false;
+		
+		function displayNote(){
+			$('#btnCopy').attr('disabled', true);
+			document.querySelector("#copy-fail").style.display = "none";
+			document.querySelector("#copy-success").style.display = "none";
+			document.querySelector('#note-display').innerHTML = getFormattedNote();
+			$('#note-modal').modal({show: true});
+		}
+
+		document.querySelector('#note-modal').addEventListener('click', ()=>{
+			const button = document.querySelector('#btnCopy');
+			button.textContent = 'Ready to copy!';
+			button.removeAttribute('disabled');
+			}, true); //Pass click event to element
+		
+		document.querySelector('#btn-refresh').addEventListener('click', () => location.reload());
+
+		document.querySelector('#note_form').addEventListener('submit', (e) => {
+			e.preventDefault();
+			displayNote();
+		})
+
+		document.querySelector('#issue_select').addEventListener('change', () => {
+
+			const selected = document.querySelector('#issue_select');
+			const text = selected[selected.selectedIndex].text;
+
+			const formatString = `${text}`
+			
+			document.querySelector('#driver-label').textContent = formatString;	
+		});
+
+		function copyFallback() {
+			var noteText = document.querySelector('#note-display');
+			noteText.focus()
+			var range = document.createRange();  
+
+			range.setStart(noteText.firstChild, 0);
+			range.setEndAfter(noteText.lastChild, 0);
+
+			window.getSelection().addRange(range);  
+
+			try {  
+				// Now that we've selected the anchor text, execute the copy command  
+				var successful = document.execCommand('copy');  
+				if (successful){
+					document.querySelector("#copy-success").style.display = "block";
+					return true;
+				} else {
+					document.querySelector("#copy-fail").style.display = "block";
+					return false;
+				}
+			} catch(err) {
+				document.querySelector("#copy-fail").style.display = "block";
+				return false;  
+				console.log('Oops, unable to copy');  
+			}  
+
+			// Remove the selections - NOTE: Should use
+			// removeRange(range) when it is supported  
+			window.getSelection().removeAllRanges();  
+		}
+
+		document.querySelector('#btnCopy').addEventListener('click', () =>{
+			try{
+				navigator.clipboard.writeText(
+					getNoteArray().join('\n')
+					).then(()=>{
+					document.querySelector("#copy-success").style.display = "block";
+				},()=>{
+					copyFallback();
+				})
+			}catch(err){
+				copyFallback();
+			}
+
+		});
+
+		var copyButton = document.querySelector('#btnCopy');  
+		copyButton.addEventListener('click', function(event) {  
+		
+			// Select the note text text  
+
+		});
+
+		
+	</script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		
+	</body>
+</html>
